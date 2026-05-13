@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <meta charset="utf-8">
+<head>
+  <script>
+  const SESSION_KEY = 'app_session';
+  const user = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+
+  if (!user) window.location.href = 'login.html';
+
+
+
+  function logout() {
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    window.location.href = 'login.html';
+  }
+</script>
+<a href="#" onclick="logout()">Logout</a>
+
+<script>
+  function logout() {
+    localStorage.removeItem('app_session');
+    sessionStorage.removeItem('app_session');
+    window.location.href = 'login.html';
+  }
+</script>
+    <style>
+        .top-bar {
+            width: 100%;
+          background-color: darkgrey;
+          color: white;
+          padding: 20px 40px;
+          font-family: serif;
+          font-size: 32px;
+          text-align: center;
+        }
+
+      body {
+          margin: 0;
+      }
+
+</style>
+
+
+  <title>My Personal Portfolio</title>
+  </head>
+  <body>
+
+
+
+    <div class="top-bar">
+        Julian Scott-Kearns <br>
+        <span style="font-size:25px;">Portfolio Personnel</span>
+</div>
+</body>
+
+  <body>
+
+    <h1>Bonjour, Mon nom est Julian Scott-Kearns.</h1>
+
+    <p>Je suis en dixiéme année et voici mon portfolio personnel. Je vais vous parler de moi, de mes intêrets et de mes compétences.</p>
+
+    <style>
+
+  body
+
+
+  h1 {
+    text-align: center;
+    color: white;
+    }
+
+  p {
+    text-align: center;
+    color: white;
+    font-size: 20px
+  }
+
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: darkgrey;
+    overflow-x: hidden;
+    transition: 1s;
+    padding-top: 60px;
+  }
+
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+  }
+
+  .sidenav a:hover {
+    color: black;
+  }
+
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+
+body  {
+  background-color: lightgrey
+}
+
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+
+  .alienimage {
+    float: right;
+    margin-right: 27vw;
+  }
+  </style>
+  </head>
+  <body>
+
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="home.html">Home</a>
+    <a class="active" href="Mes Interêts.html">Mes Interêts</a>
+    <a href="Mes Compétences.html">Mes Compétences</a>
+  </div>
+<img src="/Users/eah28jusc/Documents/Développement Web/Projets/images/Photo le 2025-09-09 à 13.31.jpg" class="alienimage" alt="alien face" width="650" height="500">
+  <span style="font-size:30px;cursor:pointer;color:white" onclick="openNav()">&#9776; Ouvrir </span>
+
+
+
+  <h1></h1>
+
+
+
+
+  <script>
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+  }
+
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+    </script>
+
+<script src="script.js"></script>
+
+  </body>
+</html>
