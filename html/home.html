@@ -1,160 +1,257 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <meta charset="utf-8">
+<html lang="fr" dir="ltr">
 <head>
-  <script>
-  const SESSION_KEY = 'app_session';
-  const user = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Julian Scott-Kearns — Portfolio</title>
 
-  if (!user) window.location.href = 'login.html';
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-
-
-  function logout() {
-    localStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem(SESSION_KEY);
-    window.location.href = 'login.html';
-  }
-</script>
-<a href="#" onclick="logout()">Logout</a>
-
-<script>
-  function logout() {
-    localStorage.removeItem('app_session');
-    sessionStorage.removeItem('app_session');
-    window.location.href = 'login.html';
-  }
-</script>
-    <style>
-        .top-bar {
-            width: 100%;
-          background-color: darkgrey;
-          color: white;
-          padding: 20px 40px;
-          font-family: serif;
-          font-size: 32px;
-          text-align: center;
-        }
-
-      body {
-          margin: 0;
-      }
-
-</style>
-
-
-  <title>My Personal Portfolio</title>
-  </head>
-  <body>
-
-
-
-    <div class="top-bar">
-        Julian Scott-Kearns <br>
-        <span style="font-size:25px;">Portfolio Personnel</span>
-</div>
-</body>
-
-  <body>
-
-    <h1>Bonjour, Mon nom est Julian Scott-Kearns.</h1>
-
-    <p>Je suis en dixiéme année et voici mon portfolio personnel. Je vais vous parler de moi, de mes intêrets et de mes compétences.</p>
-
-    <style>
-
-  body
-
-
-  h1 {
-    text-align: center;
-    color: white;
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --accent: #e2b96f;
+      --text: #f0ece2;
+      --muted: #9e9e9e;
     }
 
-  p {
-    text-align: center;
-    color: white;
-    font-size: 20px
-  }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: darkgrey;
-    overflow-x: hidden;
-    transition: 1s;
-    padding-top: 60px;
-  }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  .sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: white;
-    display: block;
-    transition: 0.3s;
-  }
+    .top-bar {
+      width: 100%;
+      background-color: var(--surface);
+      border-bottom: 1px solid rgba(226,185,111,0.25);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  .sidenav a:hover {
-    color: black;
-  }
+    .top-bar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      letter-spacing: 0.5px;
+    }
 
-  .sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-  }
+    .top-bar-title span {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
 
-body  {
-  background-color: lightgrey
-}
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
 
-  @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
-  }
+    .logout-btn {
+      background: transparent;
+      border: 1px solid rgba(226,185,111,0.5);
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
 
-  .alienimage {
-    float: right;
-    margin-right: 27vw;
-  }
+    .logout-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 200;
+      top: 0;
+      left: 0;
+      background-color: var(--surface);
+      border-right: 1px solid rgba(226,185,111,0.2);
+      overflow-x: hidden;
+      transition: width 0.4s ease;
+      padding-top: 70px;
+    }
+
+    .sidenav a {
+      padding: 14px 14px 14px 32px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+      transition: color 0.2s, padding-left 0.2s;
+      white-space: nowrap;
+    }
+
+    .sidenav a:hover { color: var(--accent); padding-left: 40px; }
+
+    .sidenav .closebtn {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 32px;
+      padding: 0;
+      color: var(--muted);
+    }
+
+    .menu-btn {
+      font-size: 26px;
+      cursor: pointer;
+      color: var(--accent);
+      background: none;
+      border: none;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      padding: 80px 10vw 60px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text {
+      max-width: 520px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .hero-text h1 em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .hero-text p {
+      font-size: 17px;
+      line-height: 1.75;
+      color: #ccc;
+      font-weight: 300;
+    }
+
+    .hero-image {
+      flex-shrink: 0;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+
+    .hero-image img {
+      width: clamp(200px, 28vw, 400px);
+      height: clamp(250px, 35vw, 500px);
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid rgba(226,185,111,0.3);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      display: block;
+    }
+
+    .hero-image .img-placeholder {
+      width: clamp(200px, 28vw, 400px);
+      height: clamp(250px, 35vw, 500px);
+      border-radius: 12px;
+      border: 2px dashed rgba(226,185,111,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-height: 450px) {
+      .sidenav { padding-top: 15px; }
+      .sidenav a { font-size: 14px; }
+    }
   </style>
-  </head>
-  <body>
+</head>
+<body>
 
-  <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a href="home.html">Home</a>
-    <a class="active" href="Mes Interêts.html">Mes Interêts</a>
-    <a href="Mes Compétences.html">Mes Compétences</a>
+  <div class="top-bar">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <button class="menu-btn" onclick="openNav()" aria-label="Open menu">&#9776;</button>
+      <div class="top-bar-title">
+        Julian Scott-Kearns
+        <span>Portfolio Personnel</span>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
   </div>
-<img src="/Users/eah28jusc/Documents/Développement Web/Projets/images/Photo le 2025-09-09 à 13.31.jpg" class="alienimage" alt="alien face" width="650" height="500">
-  <span style="font-size:30px;cursor:pointer;color:white" onclick="openNav()">&#9776; Ouvrir </span>
 
+  <nav id="mySidenav" class="sidenav" aria-label="Navigation principale">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="home.html">Accueil</a>
+    <a href="mes-interets.html">Mes Intérêts</a>
+    <a href="mes-competences.html">Mes Compétences</a>
+  </nav>
 
-
-  <h1></h1>
-
-
-
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Bonjour, je suis<br><em>Julian Scott-Kearns.</em></h1>
+      <p>
+        Je suis en dixième année et voici mon portfolio personnel.
+        Je vais vous parler de moi, de mes intérêts et de mes compétences.
+      </p>
+    </div>
+    <div class="hero-image">
+      <!-- Replace src with your actual image path, e.g. "images/photo.jpg" -->
+      <img src="images/photo.jpg" alt="Julian Scott-Kearns"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="img-placeholder" style="display:none;">[ Votre photo ici ]</div>
+    </div>
+  </section>
 
   <script>
-  function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-  }
+    const SESSION_KEY = 'app_session';
 
-  function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-  }
-    </script>
+    const user = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+    if (!user) window.location.href = 'index.html';
 
-<script src="script.js"></script>
+    function logout() {
+      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+      window.location.href = 'index.html';
+    }
 
-  </body>
+    function openNav()  { document.getElementById('mySidenav').style.width = '260px'; }
+    function closeNav() { document.getElementById('mySidenav').style.width = '0'; }
+  </script>
+
+</body>
 </html>
