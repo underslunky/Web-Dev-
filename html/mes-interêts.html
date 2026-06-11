@@ -30,12 +30,23 @@
   <p>Contenu à venir…</p>
 
   <script type="module">
-    import { requireAuth, logout as signOut, initSidenav } from '../js/appSupabase.js';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    await requireAuth('/index.html');
-    initSidenav();
+    const supabase = createClient(
+      'https://gudswujwxrrutlulzyzv.supabase.co',
+      'sb_publishable_hjxG_ZdR9bbgcyi83vl3vQ_lk-w9GDn'
+    );
 
-    window.logout = () => signOut('/index.html');
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) window.location.href = '../index.html';
+
+    window.logout = async function () {
+      await supabase.auth.signOut();
+      window.location.href = '../index.html';
+    };
+
+    window.openNav  = () => { document.getElementById('mySidenav').style.width = '250px'; };
+    window.closeNav = () => { document.getElementById('mySidenav').style.width = '0'; };
   </script>
 
 </body>
