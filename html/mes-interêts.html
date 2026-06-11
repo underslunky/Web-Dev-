@@ -1,119 +1,42 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
- <head>
-   <style>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mes Intérêts</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
 
-
-       .top-bar {
-           width: 100%;
-         background-color: darkgrey;
-         color: white;
-         padding: 20px 40px;
-         font-family: serif;
-         font-size: 32px;
-         text-align: center;
-       }
-
-        body {
-            margin: 0;
-        }
-
- </style>
-
-
-    <title>Mes Interêts</title>
-    <meta charset="utf-8">
-    <body>
-      <div class="top-bar">
-          Mes intêrets <br>
-          <span style="font-size:30px;"> et loisirs</span>
-      </div>
-
-            <h1>Mes interêts</h1>
-
-            <p>dadadad</p>
-
-    <style>
-
-
-
-  body
-
-
-
-  h1 {
-    text-align: center;
-    color: white;
-    }
-
-  .sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: darkgrey;
-    overflow-x: hidden;
-    transition: 1s;
-    padding-top: 60px;
-  }
-
-  .sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: white;
-    display: block;
-    transition: 0.3s;
-  }
-
-  .sidenav a:hover {
-    color: black;
-  }
-
-  .sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-  }
-
-body  {
-  background-color: lightgrey
-}
-
-  @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
-  }
-  </style>
-  </head>
-  <body>
-
-  <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a href="home.html">A Propos de Moi</a>
-    <a class="active" href="index.html">Home</a>
-    <a href="Mes Compétences.html">Mes Compétences</a>
+  <div class="top-bar">
+    Mes Intérêts<br>
+    <span style="font-size:25px;">et loisirs</span>
   </div>
 
+  <div class="logout-bar">
+    <span onclick="logout()">Déconnexion</span>
+  </div>
 
-  <span style="font-size:30px;cursor:pointer;color:white" onclick="openNav()">&#9776; Ouvrir</span>
+  <nav id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="home.html">Home</a>
+    <a href="mes-interets.html">Mes Intérêts</a>
+    <a href="mes-competences.html">Mes Compétences</a>
+  </nav>
 
-  <script>
-  function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-  }
+  <span class="open-nav-btn" onclick="openNav()">&#9776; Ouvrir</span>
 
-  function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-  }
+  <h1>Mes Intérêts</h1>
+  <p>Contenu à venir…</p>
+
+  <script type="module">
+    import { requireAuth, logout as signOut, initSidenav } from '../js/appSupabase.js';
+
+    await requireAuth('/index.html');
+    initSidenav();
+
+    window.logout = () => signOut('/index.html');
   </script>
 
-  </body>
-
-
-  </body>
+</body>
 </html>
