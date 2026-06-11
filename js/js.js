@@ -1,107 +1,132 @@
-const USERS_KEY = 'app_users';
-  const SESSION_KEY = 'app_session';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  function getUsers() {
-    return JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-  }
+const SUPABASE_URL = 'https://gudswujwxrrutlulzyzv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_hjxG_ZdR9bbgcyi83vl3vQ_lk-w9GDn';
 
-  function saveUsers(u) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(u));
-  }
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  function getSession() {
-    return localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
-  }
+export async function getSession() {
+  const { data } = await supabase.auth.getSession();
+  return data.session;
+}
 
-  function setSession(u, persist) {
-    if (persist) {
-      localStorage.setItem(SESSION_KEY, u);
-    } else {
-      sessionStorage.setItem(SESSION_KEY, u);
-    }
-  }
+export async function requireAuth(loginPath = '/index.html') {
+  const session = await getSession();
+  if (!session) window.location.href = loginPath;
+  return session;
+}
 
-  function go() {
-    window.location.href = 'html/home.html';
-  }
+export async function logout(loginPath = '/index.html') {
+  await supabase.auth.signOut();
+  window.location.href = loginPath;
+}
 
-  function show(id) { document.getElementById(id).style.display = ''; }
-  function hide(id) { document.getElementById(id).style.display = 'none'; }
+export function isValidEmail(email) {
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email.trim());
+}
 
-  function setAlert(id, msg) {
-    var e = document.getElementById(id);
-    e.textContent = msg;
-    e.style.display = msg ? 'block' : 'none';
-  }
+export function isValidPassword(password) {
+  return (
+    /.{6,}/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /[0-9]/.test(password) &&
+    /[!@#$%?&*(),.?":{}|<>]/.test(password)
+  );
+}
 
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
+function el(id) { return document.getElementById(id); }
 
-  function showLogin() {
-    show('loginView');
-    hide('registerView');
+function setAlert(id, msg, isSuccess = false) {
+  const e = el(id);
+  if (!e) return;
+  e.textContent = msg;
+  e.className = 'alert' + (isSuccess ? ' success' : '');
+  e.style.display = msg ? 'block' : 'none';
+}
+
+function hideErr(id) { const e = el(id); if (e) e.style.display = 'none'; }
+function showErr(id)  { const e = el(id); if (e) e.style.display = 'block'; }
+
+export function initAuthPage(homePath = 'html/home.html') {
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) window.location.href = homePath;
+  });
+
+  window.showLogin = function () {
+    el('loginView').style.display = '';
+    el('registerView').style.display = 'none';
     setAlert('loginAlert', '');
-  }
+  };
 
-  function showRegister() {
-    hide('loginView');
-    show('registerView');
+  window.showRegister = function () {
+    el('loginView').style.display = 'none';
+    el('registerView').style.display = '';
     setAlert('registerAlert', '');
-  }
+  };
 
-  function handleLogin() {
-    var u = document.getElementById('loginUsername').value.trim();
-    var e = document.getElementById('loginEmail').value.trim();
-    var p = document.getElementById('loginPassword').value.trim();
+  window.handleLogin = async function () {
+    const email    = el('loginEmail').value.trim();
+    const password = el('loginPassword').value;
 
     setAlert('loginAlert', '');
-    document.getElementById('loginUsernameErr').style.display = 'none';
-    document.getElementById('loginEmailErr').style.display = 'none';
-    document.getElementById('loginPasswordErr').style.display = 'none';
+    hideErr('loginEmailErr');
+    hideErr('loginPasswordErr');
 
-    if (!u) { document.getElementById('loginUsernameErr').style.display = 'block'; return; }
-    if (!e || !isValidEmail(e)) { document.getElementById('loginEmailErr').style.display = 'block'; return; }
-    if (!p) { document.getElementById('loginPasswordErr').style.display = 'block'; return; }
+    if (!email || !isValidEmail(email)) { showErr('loginEmailErr'); return; }
+    if (!password)                       { showErr('loginPasswordErr'); return; }
 
-    var users = getUsers();
-    if (!users[u]) { setAlert('loginAlert', 'No account found with that username.'); return; }
-    if (users[u].password !== btoa(p)) { setAlert('loginAlert', 'Incorrect password.'); return; }
-    if (users[u].email !== e) { setAlert('loginAlert', 'Email does not match this account.'); return; }
+    const btn = el('loginBtn');
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
 
-    setSession(u, document.getElementById('rememberMe').checked);
-    go();
-  }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-  function handleRegister() {
-    var u = document.getElementById('regUsername').value.trim();
-    var e = document.getElementById('regEmail').value.trim();
-    var p = document.getElementById('regPassword').value.trim();
-    var c = document.getElementById('regConfirm').value.trim();
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+
+    if (error) { setAlert('loginAlert', error.message); return; }
+
+    window.location.href = homePath;
+  };
+
+  window.handleRegister = async function () {
+    const email    = el('regEmail').value.trim();
+    const password = el('regPassword').value;
+    const confirm  = el('regConfirm').value;
+    const prenom   = el('regPrenom') ? el('regPrenom').value.trim() : '';
+    const nom      = el('regNom')    ? el('regNom').value.trim()    : '';
 
     setAlert('registerAlert', '');
-    document.getElementById('regUsernameErr').style.display = 'none';
-    document.getElementById('regEmailErr').style.display = 'none';
-    document.getElementById('regPasswordErr').style.display = 'none';
-    document.getElementById('regConfirmErr').style.display = 'none';
+    hideErr('regEmailErr');
+    hideErr('regPasswordErr');
+    hideErr('regConfirmErr');
 
-    if (!u) { document.getElementById('regUsernameErr').style.display = 'block'; return; }
-    if (!e || !isValidEmail(e)) { document.getElementById('regEmailErr').style.display = 'block'; return; }
-    if (p.length < 6) { document.getElementById('regPasswordErr').style.display = 'block'; return; }
-    if (p !== c) { document.getElementById('regConfirmErr').style.display = 'block'; return; }
+    if (!email || !isValidEmail(email)) { showErr('regEmailErr');    return; }
+    if (!isValidPassword(password))     { showErr('regPasswordErr'); return; }
+    if (password !== confirm)           { showErr('regConfirmErr');  return; }
 
-    var users = getUsers();
-    if (users[u]) { setAlert('registerAlert', 'That username is already taken.'); return; }
+    const btn = el('registerBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating account…';
 
-    users[u] = { password: btoa(p), email: e };
-    saveUsers(users);
-    setSession(u, true);
-    go();
-  }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { prenom, nom } }
+    });
 
-  if (getSession()) go();
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
 
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-const supabase = createClient(https://gudswujwxrrutlulzyzv.supabase.co/rest/v1/, 
-sb_publishable_hjxG_ZdR9bbgcyi83vl3vQ_lk-w9GDn);
+    if (error) { setAlert('registerAlert', error.message); return; }
+
+    setAlert('registerAlert', 'Account created! Check your email to confirm, then sign in.', true);
+  };
+}
+
+export function initSidenav() {
+  window.openNav  = () => { document.getElementById('mySidenav').style.width = '250px'; };
+  window.closeNav = () => { document.getElementById('mySidenav').style.width = '0'; };
+}
 
