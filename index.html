@@ -81,6 +81,11 @@
     <p class="subtitle">Register with your email and password</p>
     <div class="alert" id="registerAlert"></div>
     <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="regUsername" placeholder="Choose a username" />
+      <div class="error-msg" id="regUsernameErr">Username is required.</div>
+    </div>
+    <div class="form-group">
       <label>First Name</label>
       <input type="text" id="regPrenom" placeholder="Your first name" />
     </div>
@@ -117,7 +122,6 @@
     'sb_publishable_hjxG_ZdR9bbgcyi83vl3vQ_lk-w9GDn'
   );
 
-  // If already logged in, go to home
   const { data: sessionData } = await supabase.auth.getSession();
   if (sessionData.session) window.location.href = 'html/home.html';
 
@@ -171,16 +175,20 @@
   };
 
   window.handleRegister = async () => {
-    const email = el('regEmail').value.trim();
+    const username = el('regUsername').value.trim();
+    const email    = el('regEmail').value.trim();
     const password = el('regPassword').value;
-    const confirm = el('regConfirm').value;
-    const prenom = el('regPrenom').value.trim();
-    const nom = el('regNom').value.trim();
+    const confirm  = el('regConfirm').value;
+    const prenom   = el('regPrenom').value.trim();
+    const nom      = el('regNom').value.trim();
+
     setAlert('registerAlert', '');
+    el('regUsernameErr').style.display = 'none';
     el('regEmailErr').style.display = 'none';
     el('regPasswordErr').style.display = 'none';
     el('regConfirmErr').style.display = 'none';
 
+    if (!username) { el('regUsernameErr').style.display = 'block'; return; }
     if (!isValidEmail(email)) { el('regEmailErr').style.display = 'block'; return; }
     if (!isValidPassword(password)) { el('regPasswordErr').style.display = 'block'; return; }
     if (password !== confirm) { el('regConfirmErr').style.display = 'block'; return; }
@@ -189,13 +197,21 @@
     btn.disabled = true; btn.textContent = 'Creating account…';
 
     const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { prenom, nom } }
+      email,
+      password,
+      options: {
+        data: {
+          display_name: username,
+          prenom,
+          nom
+        }
+      }
     });
+
     btn.disabled = false; btn.textContent = 'Create Account';
 
     if (error) { setAlert('registerAlert', error.message); return; }
-    setAlert('registerAlert', 'Account created! Check your email to confirm, then sign in.', true);
+    setAlert('registerAlert', 'Account created! You can now sign in.', true);
   };
 </script>
 
