@@ -4,33 +4,73 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 40px 36px;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 380px;
+    }
+    h1 { font-size: 28px; margin: 0 0 6px 0; color: #111; }
+    .subtitle { color: #666; font-size: 14px; margin: 0 0 24px 0; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+    .form-group { margin-bottom: 18px; }
+    input[type="text"], input[type="password"], input[type="email"] {
+      width: 100%; padding: 11px 14px; font-size: 15px;
+      border: 1.5px solid #ddd; border-radius: 9px;
+      background: #fafbfc; box-sizing: border-box; outline: none;
+    }
+    input:focus { border-color: #4f46e5; background: white; }
+    .error-msg { color: #ef4444; font-size: 12px; margin-top: 4px; display: none; }
+    .alert {
+      background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;
+      padding: 10px 14px; border-radius: 8px; font-size: 14px;
+      margin-bottom: 16px; display: none;
+    }
+    .alert.success { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+    .btn {
+      width: 100%; padding: 12px; font-size: 15px; font-weight: 600;
+      border: none; border-radius: 9px; cursor: pointer; margin-top: 6px;
+    }
+    .btn-primary { background: #4f46e5; color: white; }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-primary:disabled { background: #a5b4fc; cursor: not-allowed; }
+    .divider { text-align: center; color: #aaa; font-size: 13px; margin: 18px 0; }
+    .toggle-link { display: block; text-align: center; color: #4f46e5; font-size: 14px; cursor: pointer; margin-top: 16px; }
+  </style>
 </head>
-<body class="login-page">
+<body>
 
-<div class="card" id="loginCard">
+<div class="card">
 
   <!-- LOGIN -->
   <div id="loginView">
     <h1>Welcome back</h1>
     <p class="subtitle">Sign in to your account</p>
-
     <div class="alert" id="loginAlert"></div>
-
     <div class="form-group">
-      <label for="loginEmail">Email</label>
+      <label>Email</label>
       <input type="email" id="loginEmail" placeholder="Enter your email" />
       <div class="error-msg" id="loginEmailErr">Please enter a valid email address.</div>
     </div>
-
     <div class="form-group">
-      <label for="loginPassword">Password</label>
+      <label>Password</label>
       <input type="password" id="loginPassword" placeholder="Enter your password" />
       <div class="error-msg" id="loginPasswordErr">Password is required.</div>
     </div>
-
     <button class="btn btn-primary" id="loginBtn" onclick="handleLogin()">Sign In</button>
-
     <div class="divider">or</div>
     <span class="toggle-link" onclick="showRegister()">Don't have an account? Register</span>
   </div>
@@ -39,46 +79,125 @@
   <div id="registerView" style="display:none">
     <h1>Create account</h1>
     <p class="subtitle">Register with your email and password</p>
-
     <div class="alert" id="registerAlert"></div>
-
     <div class="form-group">
-      <label for="regPrenom">First Name</label>
+      <label>First Name</label>
       <input type="text" id="regPrenom" placeholder="Your first name" />
     </div>
-
     <div class="form-group">
-      <label for="regNom">Last Name</label>
+      <label>Last Name</label>
       <input type="text" id="regNom" placeholder="Your last name" />
     </div>
-
     <div class="form-group">
-      <label for="regEmail">Email</label>
+      <label>Email</label>
       <input type="email" id="regEmail" placeholder="Enter your email" />
       <div class="error-msg" id="regEmailErr">Please enter a valid email address.</div>
     </div>
-
     <div class="form-group">
-      <label for="regPassword">Password</label>
+      <label>Password</label>
       <input type="password" id="regPassword" placeholder="Min 6 chars, upper, lower, number, symbol" />
-      <div class="error-msg" id="regPasswordErr">
-        Password must be at least 6 characters, include uppercase, lowercase, a number, and a special character.
-      </div>
+      <div class="error-msg" id="regPasswordErr">Password must have uppercase, lowercase, number, and special character.</div>
     </div>
-
     <div class="form-group">
-      <label for="regConfirm">Confirm Password</label>
+      <label>Confirm Password</label>
       <input type="password" id="regConfirm" placeholder="Repeat your password" />
       <div class="error-msg" id="regConfirmErr">Passwords do not match.</div>
     </div>
-
     <button class="btn btn-primary" id="registerBtn" onclick="handleRegister()">Create Account</button>
     <span class="toggle-link" onclick="showLogin()">Already have an account? Sign in</span>
   </div>
 
 </div>
 
-  <script type="module" src="https://underslunky.github.io/Web-Dev-/js/appSupabase.js"></script>
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  const supabase = createClient(
+    'https://gudswujwxrrutlulzyzv.supabase.co',
+    'sb_publishable_hjxG_ZdR9bbgcyi83vl3vQ_lk-w9GDn'
+  );
+
+  // If already logged in, go to home
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (sessionData.session) window.location.href = 'html/home.html';
+
+  function el(id) { return document.getElementById(id); }
+
+  function setAlert(id, msg, isSuccess = false) {
+    const e = el(id);
+    e.textContent = msg;
+    e.className = 'alert' + (isSuccess ? ' success' : '');
+    e.style.display = msg ? 'block' : 'none';
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function isValidPassword(p) {
+    return p.length >= 6 && /[a-z]/.test(p) && /[A-Z]/.test(p) && /[0-9]/.test(p) && /[!@#$%?&*(),.?":{}|<>]/.test(p);
+  }
+
+  window.showLogin = () => {
+    el('loginView').style.display = '';
+    el('registerView').style.display = 'none';
+    setAlert('loginAlert', '');
+  };
+
+  window.showRegister = () => {
+    el('loginView').style.display = 'none';
+    el('registerView').style.display = '';
+    setAlert('registerAlert', '');
+  };
+
+  window.handleLogin = async () => {
+    const email = el('loginEmail').value.trim();
+    const password = el('loginPassword').value;
+    setAlert('loginAlert', '');
+    el('loginEmailErr').style.display = 'none';
+    el('loginPasswordErr').style.display = 'none';
+
+    if (!isValidEmail(email)) { el('loginEmailErr').style.display = 'block'; return; }
+    if (!password) { el('loginPasswordErr').style.display = 'block'; return; }
+
+    const btn = el('loginBtn');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    btn.disabled = false; btn.textContent = 'Sign In';
+
+    if (error) { setAlert('loginAlert', error.message); return; }
+    window.location.href = 'html/home.html';
+  };
+
+  window.handleRegister = async () => {
+    const email = el('regEmail').value.trim();
+    const password = el('regPassword').value;
+    const confirm = el('regConfirm').value;
+    const prenom = el('regPrenom').value.trim();
+    const nom = el('regNom').value.trim();
+    setAlert('registerAlert', '');
+    el('regEmailErr').style.display = 'none';
+    el('regPasswordErr').style.display = 'none';
+    el('regConfirmErr').style.display = 'none';
+
+    if (!isValidEmail(email)) { el('regEmailErr').style.display = 'block'; return; }
+    if (!isValidPassword(password)) { el('regPasswordErr').style.display = 'block'; return; }
+    if (password !== confirm) { el('regConfirmErr').style.display = 'block'; return; }
+
+    const btn = el('registerBtn');
+    btn.disabled = true; btn.textContent = 'Creating account…';
+
+    const { error } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { prenom, nom } }
+    });
+    btn.disabled = false; btn.textContent = 'Create Account';
+
+    if (error) { setAlert('registerAlert', error.message); return; }
+    setAlert('registerAlert', 'Account created! Check your email to confirm, then sign in.', true);
+  };
+</script>
 
 </body>
 </html>
